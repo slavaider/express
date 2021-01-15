@@ -1,13 +1,13 @@
 [
   {
-    "title": "angular",
-    "price": "222",
+    "title": "angular2",
+    "price": "2224",
     "image": "https://frontendlabepam.github.io/FL5/angular/assets/img/angular-js-logo.png",
-    "id": "a3f8bb88-2287-49d9-83c5-34a4fb234575"
+    "id": "1231231dd"
   },
   {
-    "title": "VUE",
-    "price": "12321312321312",
+    "title": "Vue",
+    "price": "1234",
     "image": "https://res.cloudinary.com/practicaldev/image/fetch/s--b7YaNPON--/c_imagga_scale,f_auto,fl_progressive,h_500,q_auto,w_1000/https://thepracticaldev.s3.amazonaws.com/i/hckwksjv35606qthbmv1.png",
     "id": "01cbb451-4f79-4b8b-ae84-fb92b2586fa1"
   }

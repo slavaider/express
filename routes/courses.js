@@ -1,6 +1,7 @@
 const {Router} = require('express')
 const router = Router()
 const Course = require('../models/course')
+
 router.get('/', async (req, res) => {
     const courses = await Course.getAll()
     res.render('courses', {
@@ -23,10 +24,14 @@ router.get('/:id/edit', async (req, res) => {
     }
     const course = await Course.getById(req.params.id)
     res.render('course-edit', {
-        layout: 'empty',
         title: 'Редактировать Курс',
         course
     })
-
 })
+
+router.post('/:id/edit', async (req, res) => {
+    await Course.update(req.body, req.params.id)
+    res.redirect('/courses')
+})
+
 module.exports = router

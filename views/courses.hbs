@@ -11,9 +11,14 @@
                         <h5> {{title}}</h5>
                         <p class="price">{{price}}</p>
                     </div>
-                    <div class="card-action">
+                    <div class="card-action actions">
                         <a href="/courses/{{id}}" target="_blank">Открыть курс</a>
-                        <a href="/courses/{{id}}/edit?allow=true" target="_blank">Редактировать курс</a>
+                        <a href="/courses/{{id}}/edit?allow=true">Редактировать курс</a>
+                        <!--suppress HtmlUnknownTarget -->
+                        <form action="/card/add" method="POST">
+                            <input type="hidden" name="id" value="{{id}}">
+                            <button class="btn btn-primary" type="submit">Добавить</button>
+                        </form>
                     </div>
                 </div>
             </div>
