@@ -9,9 +9,14 @@ router.get('/', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-    const course = new Course(req.body.title, req.body.price, req.body.image)
+    const course = new Course({
+        title: req.body.title,
+        price: req.body.price,
+        image: req.body.image,
+        userId: req.user._id
+    })
     course.save().catch(err => console.error(err))
-    res.redirect('/courses')
+    res.redirect('/')
 })
 
 module.exports = router

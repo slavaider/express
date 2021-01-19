@@ -1,6 +1,7 @@
+<!--suppress ALL -->
 <h1>{{title}}</h1>
-<div id="card">
-    {{#if courses.length}}
+<div id="cart">
+    {{#if items.length}}
         <table>
             <thead>
             <tr>
@@ -10,7 +11,7 @@
             </tr>
             </thead>
             <tbody>
-            {{#each courses}}
+            {{#each items}}
                 <tr>
                     <td>{{title}}</td>
                     <td>{{count}}</td>
@@ -24,6 +25,9 @@
             </tbody>
         </table>
         <p><strong>Цена</strong> <span class="price">{{price}}</span></p>
+        <form method="POST" action="/orders">
+            <button class="btn" type="submit">Сделать заказ</button>
+        </form>
     {{else}}
         <p>Нет элементов в корзине</p>
     {{/if}}

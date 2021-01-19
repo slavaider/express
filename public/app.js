@@ -8,16 +8,16 @@ document.querySelectorAll('.price').forEach((el) => {
     el.textContent = toCurrency(el.textContent);
 })
 
-const $card = document.getElementById('card')
-if ($card) {
-    $card.addEventListener('click', (event) => {
+const $cart = document.getElementById('cart')
+if ($cart) {
+    $cart.addEventListener('click', (event) => {
         if (event.target.classList.contains('js-remove')) {
             const id = event.target.dataset.id
-            fetch('/card/remove/' + id, {method: 'DELETE'})
+            fetch('/cart/remove/' + id, {method: 'DELETE'})
                 .then(response => response.json())
-                .then(card => {
-                    if (card.courses.length) {
-                        $card.querySelector('tbody').innerHTML = card.courses.map(c => {
+                .then(cart => {
+                    if (cart.items.length) {
+                        $cart.querySelector('tbody').innerHTML = cart.items.map(c => {
                             return `
                             <tr>
                                 <td>${c.title}</td>
@@ -30,11 +30,26 @@ if ($card) {
                             </tr>
                         `
                         }).join('')
-                        $card.querySelector('.price').textContent = toCurrency(card.price)
+                        $cart.querySelector('.price').textContent = toCurrency(cart.price)
                     } else {
-                        $card.innerHTML = 'Корзина пуста'
+                        $cart.innerHTML = 'Корзина пуста'
                     }
                 })
         }
     })
 }
+const toDate = (date) => {
+    return new Intl.DateTimeFormat('ru-RU', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+    }).format(new Date(date))
+}
+
+document.querySelectorAll('.date').forEach((el) => {
+    el.textContent = toDate(el.textContent);
+})
+
