@@ -13,12 +13,13 @@
                     </div>
                     <div class="card-action actions">
                         <a href="/courses/{{id}}" target="_blank">Открыть курс</a>
-                        <a href="/courses/{{id}}/edit?allow=true">Редактировать курс</a>
-                        <!--suppress HtmlUnknownTarget -->
-                        <form action="/cart/add" method="POST">
-                            <input type="hidden" name="id" value="{{id}}">
-                            <button class="btn btn-primary" type="submit">Добавить</button>
-                        </form>
+                        {{#if @root.isAuthenticated}}
+                            <a href="/courses/{{id}}/edit?allow=true">Редактировать курс</a>
+                            <form action="/cart/add" method="POST">
+                                <input type="hidden" name="id" value="{{id}}">
+                                <button class="btn btn-primary" type="submit">Купить</button>
+                            </form>
+                        {{/if}}
                     </div>
                 </div>
             </div>
