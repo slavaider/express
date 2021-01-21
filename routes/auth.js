@@ -2,8 +2,14 @@ const {Router} = require('express')
 const router = Router()
 const User = require('../models/user')
 const bcrypt = require('bcryptjs');
+
 router.get('/login', async (req, res) => {
-    res.render('auth/login', {title: 'Login Page', isLogin: true})
+    res.render('auth/login', {
+        title: 'Login Page',
+        isLogin: true,
+        Login_error: req.flash('Login_error'),
+        Register_error: req.flash('Register_error')
+    });
 })
 
 router.get('/logout', async (req, res) => {
@@ -26,9 +32,11 @@ router.post('/login', async (req, res) => {
                     res.redirect('/')
                 })
             } else {
+                req.flash('Login_error', 'Неверный пароль')
                 res.redirect('/auth/login#login')
             }
         } else {
+            req.flash('Login_error', 'Такого пользователя не существует')
             res.redirect('/auth/login#login')
         }
     } catch (err) {
@@ -41,8 +49,13 @@ router.post('/login', async (req, res) => {
 router.post('/register', async (req, res) => {
     try {
         const {email, password, confirm, name} = req.body
+        if (password !== confirm) {
+            req.flash('Register_error', 'Пароли не совпадают')
+            res.redirect('/auth/login#register')
+        }
         const candidate = await User.findOne({email})
-        if (password !== confirm || candidate) {
+        if (candidate) {
+            req.flash('Register_error', 'Пользователь с таким email уже существует')
             res.redirect('/auth/login#register')
         } else {
             const hashPassword = await bcrypt.hash(password, 10)
