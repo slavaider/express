@@ -33,7 +33,7 @@ router.post('/', auth, async (req, res) => {
             courses
         })
         await order.save()
-        await req.user.ClearCart()
+        await req.user.ClearCart().catch(err => console.error(err))
         res.redirect('/orders')
     } catch (e) {
         console.log(e)

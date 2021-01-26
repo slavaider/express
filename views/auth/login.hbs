@@ -24,15 +24,16 @@
                     <span class="helper-text" data-error="Введите пароль"></span>
                 </div>
                 <input type="hidden" name="_csrf" value="{{csrf}}">
+                <p><a href="/auth/reset">Забыли пароль</a></p>
                 <button class="btn btn-primary" type="submit">Войти</button>
             </form>
         </div>
         <div id="register" class="col s6 offset-s3">
             {{#if Register_error}}
-                    <p class="alert">{{Register_error}}</p>
+                <p class="alert">{{Register_error}}</p>
             {{/if}}
             <h3>Создать аккаунт</h3>
-            <form method="POST" action="/auth/register">
+            <form method="POST" action="/auth/register" novalidate>
                 <div class="input-field">
                     <input id="name" name="name" type="text" class="validate" required>
                     <label for="name">Имя пользователя</label>
