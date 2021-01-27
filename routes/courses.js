@@ -2,7 +2,8 @@ const {Router} = require('express')
 const router = Router()
 const Course = require('../models/course')
 const auth = require('../middleware/auth')
-
+const {courseValidators} = require('../utils/validators')
+const {validationResult} = require('express-validator')
 router.get('/', async (req, res) => {
     const courses = await Course.find()
         .populate('userId', 'email name')
@@ -28,6 +29,7 @@ router.get('/:id/edit', auth, async (req, res) => {
     if (!req.query.allow) {
         return res.redirect('/')
     }
+
     const course = await Course.findById(req.params.id).catch(err => console.error(err))
     if (course.userId.toString() !== req.user._id.toString()) {
         return res.redirect('/courses')
@@ -38,7 +40,11 @@ router.get('/:id/edit', auth, async (req, res) => {
     })
 })
 
-router.post('/:id/edit', auth, async (req, res) => {
+router.post('/:id/edit', auth, courseValidators, async (req, res) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(422).redirect('/:id/edit?allow=true')
+    }
     const course = await Course.findById(req.params.id)
     if (course.userId.toString() !== req.user._id.toString()) {
         return res.redirect('/courses')

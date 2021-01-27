@@ -6,7 +6,7 @@ const keys = require('../keys')
 const crypto = require('crypto');
 // Validators
 const {validationResult} = require('express-validator')
-const {registerValidators,loginValidators} = require('../utils/validators')
+const {registerValidators, loginValidators} = require('../utils/validators')
 // mail
 const nodemailer = require('nodemailer');
 const sendgrid = require('nodemailer-sendgrid-transport')
@@ -16,6 +16,7 @@ const transporter = nodemailer.createTransport(sendgrid({
 
 const reg_email = require('../emails/registration')
 const reset_email = require('../emails/reset')
+const {resetValidators} = require("../utils/validators");
 
 router.get('/login', (req, res) => {
     res.render('auth/login', {
@@ -26,7 +27,7 @@ router.get('/login', (req, res) => {
     });
 })
 
-router.post('/login',loginValidators, async (req, res) => {
+router.post('/login', loginValidators, async (req, res) => {
     try {
         const {email, password} = req.body
         const errors = validationResult(req)
@@ -62,7 +63,7 @@ router.post('/login',loginValidators, async (req, res) => {
 router.get('/reset', (req, res) => {
     res.render('auth/reset', {
         title: 'Reset Page',
-        error: req.flash('error')
+        ResetError: req.flash('ResetError')
     });
 })
 
@@ -70,7 +71,7 @@ router.post('/reset', (req, res) => {
     try {
         crypto.randomBytes(32, async (err, buffer) => {
             if (err) {
-                req.flash('error', err.toString());
+                req.flash('ResetError', err.toString());
                 return res.redirect('/auth/reset');
             }
             const token = buffer.toString('hex');
@@ -82,12 +83,12 @@ router.post('/reset', (req, res) => {
                 await transporter.sendMail(reset_email(candidate.email, token));
                 return res.redirect('/');
             } else {
-                req.flash('error', 'Такого email нет')
+                req.flash('ResetError', 'Такого email нет')
                 return res.redirect('/auth/reset');
             }
         })
     } catch (e) {
-        if (e) req.flash('error', e.toString())
+        if (e) req.flash('ResetError', e.toString())
         return res.redirect('/auth/reset');
     }
 })
@@ -108,14 +109,14 @@ router.get('/password/:token', async (req, res) => {
     } else {
         res.render('auth/password', {
             title: 'Reset Password Page',
-            error: req.flash('error'),
+            ResetError: req.flash('ResetError'),
             userId: user._id.toString(),
             token: req.params.token,
         });
     }
 })
 
-router.post('/password', async (req, res) => {
+router.post('/password', resetValidators, async (req, res) => {
     try {
         const user = await User.findOne({
             _id: req.body.userId,
@@ -123,6 +124,16 @@ router.post('/password', async (req, res) => {
             expiredDate: {$gt: Date.now()}
         })
         if (user) {
+            const errors = validationResult(req)
+            if (!errors.isEmpty()) {
+                req.flash('ResetError', errors.array()[0].msg)
+                return res.status(422).render('auth/password', {
+                    title: 'Reset Password Page',
+                    ResetError: req.flash('ResetError'),
+                    userId: user._id.toString(),
+                    token: req.params.token,
+                })
+            }
             user.password = await bcrypt.hash(req.body.password, 10)
             user.resetToken = undefined
             user.expiredDate = undefined

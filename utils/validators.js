@@ -37,3 +37,14 @@ exports.loginValidators = [
         .isAlphanumeric()
         .trim()
 ]
+exports.resetValidators = [
+    body('password', 'Пароль должен быть минимум 6 символов')
+        .isLength({min: 6, max: 56})
+        .isAlphanumeric()
+        .trim(),
+]
+exports.courseValidators = [
+    body('title').isLength({min: 3}).withMessage('Мининмальная длина названия 3 символа').trim(),
+    body('price').isNumeric().withMessage('Введите корректную цену'),
+    body('image').isURL().withMessage('Введите корректный url картинки')
+]
