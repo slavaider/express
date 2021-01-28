@@ -6,6 +6,8 @@ const session = require('express-session')
 const MongoStore = require('connect-mongodb-session')(session)
 // Extension libs
 const path = require('path')
+const helmet = require('helmet')
+const compression = require('compression')
 // Routes
 const homeRoutes = require('./routes/home')
 const cardRoutes = require('./routes/cart_add_item')
@@ -46,7 +48,7 @@ const store = new MongoStore({
 })
 // Configure express
 app.use(express.static(path.join(__dirname, 'public')))
-app.use('/images',express.static(path.join(__dirname, 'images')))
+app.use('/images', express.static(path.join(__dirname, 'images')))
 app.use(express.urlencoded({extended: true}))
 app.use(session({
     secret: keys.SESSION_SECRET,
@@ -58,6 +60,10 @@ app.use(session({
 app.use(fileMiddleware.single('avatar'))
 app.use(csrf())
 app.use(flash())
+app.use(helmet({
+    contentSecurityPolicy: false
+}))
+app.use(compression())
 app.use(varMiddleware)
 app.use(userMiddleware)
 
